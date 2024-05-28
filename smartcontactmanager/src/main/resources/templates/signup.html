@@ -6,7 +6,67 @@
 </head>
 <body>
 <section>
-    <h1>this is Signup page</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+
+                <div class="my-card mt-3">
+
+                    <div class="container text-center" >
+                        <img class="" style="width: 80px;" src="" th:src="@{/img/register.png}" alt="">
+                    </div>
+
+                    <h1 class="text-center">Register Here !!</h1>
+                    <form action="" th:action="@{/do_register}" method="post">
+                        <!-- name field -->
+
+
+                        <div class="mb-3">
+                            <label for="name_feild" class="form-label">Your Name</label>
+
+                            <input type="text" class="form-control" id="name_feild" aria-describedby="emailHelp"
+                                   placeholder="Enter here" required="required">
+
+                        </div>
+
+                        <!-- email field -->
+
+
+                        <div class="mb-3">
+                            <label for="email_feild" class="form-label">Your Mail</label>
+
+                            <input type="email" class="form-control" id="email_feild" aria-describedby="emailHelp"
+                                   placeholder="Enter here" required="required">
+
+                        </div>
+
+                        <!-- password field -->
+
+
+                        <div class="mb-3">
+                            <label for="password_feild" class="form-label">Your Password</label>
+
+                            <input type="text" class="form-control" id="password_feild" aria-describedby="emailHelp"
+                                   placeholder="Enter here" required="required">
+
+                        </div>
+                        <!-- about field -->
+                        <div class="form-group">
+	                                <textarea placeholder="Enter something about yourself" rows="6"
+                                              class="form-control"></textarea>
+                        </div>
+
+                        <div class="container text-center" >
+                            <button type="submit" class="btn bg-primary text-white">Submit</button>
+                            <button type="reset" class="btn btn-warning ">Reset</button>
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 

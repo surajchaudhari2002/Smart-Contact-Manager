@@ -12,5 +12,9 @@ body{
 	background: Linear-gradient(rgba(0,0,0,.8),rgba(0,0,0,.8)),url(../img/banner.png);
 	background-size:cover;
 	color: white;
+}
 
+.my-card{
+	padding: 20px;
+	background: #ffffff;
 }
