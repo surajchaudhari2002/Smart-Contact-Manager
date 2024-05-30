@@ -22,6 +22,8 @@ import com.smart.helper.Message;
 @Controller
 public class HomeController {
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;
@@ -67,6 +69,7 @@ public class HomeController {
             user.setRole("ROLE_USER");
             user.setEnabled(true);
             user.setImgUrl("default.png");
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
 
             System.out.println("Agreement " + agreement);
             System.out.println("USER " + user);
@@ -87,5 +90,11 @@ public class HomeController {
 
     }
 
-
+    //handler for custom login
+    @GetMapping("/signin")
+    public String customLogin(Model model)
+    {
+        model.addAttribute("title","Login Page");
+        return "login";
+    }
 }
