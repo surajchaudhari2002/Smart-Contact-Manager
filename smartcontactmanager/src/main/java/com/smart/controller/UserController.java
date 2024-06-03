@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
+import java.util.Optional;
 
 import com.smart.dao.ContactRepository;
 import com.smart.dao.UserRepository;
@@ -143,5 +144,27 @@ public class UserController {
         m.addAttribute("totalPages", contacts.getTotalPages());
 
         return "normal/show_contacts";
+    }
+
+
+    // showing particular contact details.
+
+    @RequestMapping("/{cId}/contact")
+    public String showContactDetail(@PathVariable("cId") Integer cId, Model model, Principal principal) {
+        System.out.println("CID " + cId);
+
+        Optional<Contact> contactOptional = this.contactRepository.findById(cId);
+        Contact contact = contactOptional.get();
+
+        //
+        String userName = principal.getName();
+        User user = this.userRepository.getUserByUserName(userName);
+
+        if (user.getId() == contact.getUser().getId()) {
+            model.addAttribute("contact", contact);
+            model.addAttribute("title", contact.getName());
+        }
+
+        return "normal/contact_detail";
     }
 }
