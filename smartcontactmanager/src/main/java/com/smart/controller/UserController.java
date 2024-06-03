@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -166,5 +167,30 @@ public class UserController {
         }
 
         return "normal/contact_detail";
+    }
+
+    // delete contact handler
+
+    @GetMapping("/delete/{cid}")
+    @Transactional
+    public String deleteContact(@PathVariable("cid") Integer cId, Model model, HttpSession session,
+                                Principal principal) {
+        System.out.println("CID " + cId);
+
+        Contact contact = this.contactRepository.findById(cId).get();
+        // check...Assignment..image delete
+
+        // delete old photo
+
+        User user = this.userRepository.getUserByUserName(principal.getName());
+
+        user.getContacts().remove(contact);
+
+        this.userRepository.save(user);
+
+        System.out.println("DELETED");
+        session.setAttribute("message", new Message("Contact deleted succesfully...", "success"));
+
+        return "redirect:/user/show-contacts/0";
     }
 }
