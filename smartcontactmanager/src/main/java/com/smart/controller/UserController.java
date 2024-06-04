@@ -82,11 +82,11 @@ public class UserController {
             if (file.isEmpty()) {
                 // if the file is empty then try our message
                 System.out.println("File is empty");
-                contact.setImgUrl("contact.png");
+                contact.setImage("contact.png");
 
             } else {
                 // file the file to folder and update the name to contact
-                contact.setImgUrl(file.getOriginalFilename());
+                contact.setImage(file.getOriginalFilename());
 
                 File saveFile = new ClassPathResource("static/img").getFile();
 
@@ -224,7 +224,7 @@ public class UserController {
 //				delete old photo
 
                 File deleteFile = new ClassPathResource("static/img").getFile();
-                File file1 = new File(deleteFile, oldcontactDetail.getImgUrl());
+                File file1 = new File(deleteFile, oldcontactDetail.getImage());
                 file1.delete();
 
 //				update new photo
@@ -235,10 +235,10 @@ public class UserController {
 
                 Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 
-                contact.setImgUrl(file.getOriginalFilename());
+                contact.setImage(file.getOriginalFilename());
 
             } else {
-                contact.setImgUrl(oldcontactDetail.getImgUrl());
+                contact.setImage(oldcontactDetail.getImage());
             }
 
             User user = this.userRepository.getUserByUserName(principal.getName());

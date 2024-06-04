@@ -1,30 +1,35 @@
 package com.smart.entities;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="CONTACT")
 public class Contact {
+
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int cId;
     private String name;
-    private String secondname;
+    private String secondName;
     private String work;
     private String email;
-    private String imgUrl;
-    @Column(length=500)
-    private String description;
     private String phone;
+    private String image;
+    @Column(length = 5000)
+    private String description;
+
     @ManyToOne
+    @JsonIgnore
     private User user;
-    public User getUser() {
-        return user;
-    }
-    public void setUser(User user) {
-        this.user = user;
-    }
+
     public int getcId() {
         return cId;
     }
@@ -37,11 +42,11 @@ public class Contact {
     public void setName(String name) {
         this.name = name;
     }
-    public String getSecondname() {
-        return secondname;
+    public String getSecondName() {
+        return secondName;
     }
-    public void setSecondname(String secondname) {
-        this.secondname = secondname;
+    public void setSecondName(String secondName) {
+        this.secondName = secondName;
     }
     public String getWork() {
         return work;
@@ -55,11 +60,17 @@ public class Contact {
     public void setEmail(String email) {
         this.email = email;
     }
-    public String getImgUrl() {
-        return imgUrl;
+    public String getPhone() {
+        return phone;
     }
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+    public String getImage() {
+        return image;
+    }
+    public void setImage(String image) {
+        this.image = image;
     }
     public String getDescription() {
         return description;
@@ -67,10 +78,16 @@ public class Contact {
     public void setDescription(String description) {
         this.description = description;
     }
-    public String getPhone() {
-        return phone;
+    public User getUser() {
+        return user;
     }
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setUser(User user) {
+        this.user = user;
     }
+    @Override
+    public boolean equals(Object obj) {
+        // TODO Auto-generated method stub
+        return this.cId==((Contact)obj).getcId();
+    }
+
 }
