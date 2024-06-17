@@ -1,33 +1,48 @@
 package com.smart.controller;
 
-
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import javax.servlet.http.HttpSession;
+import com.razorpay.*;
+
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.Streamable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.smart.dao.ContactRepository;
 import com.smart.dao.UserRepository;
 import com.smart.entities.Contact;
 import com.smart.entities.User;
 import com.smart.helper.Message;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpSession;
-
 
 @Controller
 @RequestMapping("/user")
@@ -35,11 +50,18 @@ public class UserController {
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private ContactRepository contactRepository;
+
+
+
+
+
+
 
     // method for adding common data to response
     @ModelAttribute
@@ -151,7 +173,6 @@ public class UserController {
         return "normal/show_contacts";
     }
 
-
     // showing particular contact details.
 
     @RequestMapping("/{cId}/contact")
@@ -197,6 +218,7 @@ public class UserController {
 
         return "redirect:/user/show-contacts/0";
     }
+
     // open update form handler
     @PostMapping("/update-contact/{cid}")
     public String updateForm(@PathVariable("cid") Integer cid, Model m) {
@@ -268,6 +290,7 @@ public class UserController {
         model.addAttribute("title", "Profile Page");
         return "normal/profile";
     }
+
     // open settings handler
     @GetMapping("/settings")
     public String openSettings() {
@@ -302,5 +325,31 @@ public class UserController {
     }
 
 
+    //creating order for payment
+
+    @PostMapping("/create_order")
+    @ResponseBody
+    public String createOrder(@RequestBody Map<String, Object> data) throws Exception
+    {
+        //System.out.println("Hey order function ex.");
+        System.out.println(data);
+
+        int amt=Integer.parseInt(data.get("amount").toString());
+
+        var client=new RazorpayClient("rzp_test_haDRsJIQo9vFPJ", "owKJJes2fwE6YD6DToishFuH");
+
+        JSONObject ob=new JSONObject();
+        ob.put("amount", amt*100);
+        ob.put("currency", "INR");
+        ob.put("receipt", "txn_235425");
+
+        //creating new order
+
+        Order order = client.Orders.create(ob);
+        System.out.println(order);
+
+        //if you want you can save this to your data..
+        return order.toString();
+    }
 
 }
