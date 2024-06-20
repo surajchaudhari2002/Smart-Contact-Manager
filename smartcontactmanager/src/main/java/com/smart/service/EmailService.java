@@ -15,7 +15,7 @@ public class EmailService {
 
         boolean f = false;
 
-        String from = "techsoftindia2018@gmail.com";
+        String from = "chaudharisuraj2002@gmail.com";
 
         //Variable for gmail
         String host = "smtp.gmail.com";
@@ -36,7 +36,7 @@ public class EmailService {
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("techsoftindia2018@gmail.com", "123@SoftTech");
+                return new PasswordAuthentication("chaudharisuraj2002@gmail.com", "tpwjcgjnqcsvakca");
             }
 
 
