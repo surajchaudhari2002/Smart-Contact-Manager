@@ -1,28 +1,26 @@
 package com.smart.controller;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 import com.razorpay.*;
 
+import com.smart.dao.MyOrderRepository;
+import com.smart.entities.MyOrder;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.util.Streamable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,7 +56,8 @@ public class UserController {
     private ContactRepository contactRepository;
 
 
-
+@Autowired
+private MyOrderRepository myOrderRepository;
 
 
 
@@ -329,14 +328,14 @@ public class UserController {
 
     @PostMapping("/create_order")
     @ResponseBody
-    public String createOrder(@RequestBody Map<String, Object> data) throws Exception
+    public String createOrder(@RequestBody Map<String, Object> data,Principal principal) throws Exception
     {
         //System.out.println("Hey order function ex.");
         System.out.println(data);
 
         int amt=Integer.parseInt(data.get("amount").toString());
 
-        var client=new RazorpayClient("rzp_test_haDRsJIQo9vFPJ", "owKJJes2fwE6YD6DToishFuH");
+        var client=new RazorpayClient("rzp_test_DPtQ1dWFu6bkdR", "eh7Xpx8VCjqVcuHcDhel0kLu");
 
         JSONObject ob=new JSONObject();
         ob.put("amount", amt*100);
@@ -348,8 +347,34 @@ public class UserController {
         Order order = client.Orders.create(ob);
         System.out.println(order);
 
+        //save order details in database
+
+        MyOrder myOrder=new MyOrder();
+        myOrder.setAmount(order.get("amount")+"");
+        myOrder.setOrderId(order.get("id"));
+        myOrder.setPaymentId(null);
+        myOrder.setStatus("created");
+        myOrder.setUser(this.userRepository.getUserByUserName(principal.getName()));
+        myOrder.setReceipt(order.get("receipt"));
+
+        this.myOrderRepository.save(myOrder);
+
+
         //if you want you can save this to your data..
         return order.toString();
+    }
+
+    @PostMapping("/update_order")
+    public ResponseEntity<Map<String, String>> updateOrder(@RequestBody Map<String, Object> data) {
+
+       MyOrder myorder=this.myOrderRepository.findByOrderId(data.get("order_id").toString());
+
+       myorder.setPaymentId(data.get("payment_id").toString());
+       myorder.setStatus(data.get("status").toString());
+
+       this.myOrderRepository.save(myorder);
+       System.out.println(data);
+        return ResponseEntity.ok(Map.of("msg","updated"));
     }
 
 }

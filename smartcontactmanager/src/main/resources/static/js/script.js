@@ -78,7 +78,7 @@ const paymentStart = () => {
       if (response.status == "created") {
         //open payment form
         let options = {
-          key: "rzp_test_haDRsJIQo9vFPJ",
+          key: "rzp_test_DPtQ1dWFu6bkdR",
           amount: response.amount,
           currency: "INR",
           name: "Smart Contact Manager",
@@ -92,6 +92,13 @@ const paymentStart = () => {
             console.log(response.razorpay_signature);
             console.log("payment successful !!");
             // alert("congrates !! Payment successful !!");
+
+            updatePaymentOnServer(
+            response.razorpay_payment_id,
+            response.razorpay_order_id,
+            "paid"
+            );
+
             swal("Good job!", "congrates !! Payment successful !!", "success");
           },
           prefill: {
@@ -132,3 +139,19 @@ const paymentStart = () => {
     },
   });
 };
+
+function updatePaymentOnServer(payment_id,order_id,status)
+{
+$.ajax({
+url: "/user/update_order",
+    data: JSON.stringify({ payment_id:payment_id, order_id:order_id, status }),
+    contentType: "application/json",
+    type: "POST",
+    dataType: "json",
+    success:function(response){
+    swal("Good job!", "congrats !! Payment successful !!", "success");
+     },
+    error: function(error){
+    swal("Failed !!", "Your payment is successful but not updated on server we will contact you soon..!!", "error");},
+});
+}
